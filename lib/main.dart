@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:vcard/pages/homepage.dart';
+import 'package:vcard/pages/scanpage.dart';
 
 void main() {
   runApp(MyApp());
@@ -26,7 +27,16 @@ final _router =GoRouter(
   routes: [
     GoRoute(path: HomePage.routeName,
     name: HomePage.routeName,
-    builder:(context, state) => const HomePage(),),
+    builder:(context, state) => const HomePage(),
+    routes: [
+      GoRoute(path: ScanPage.routeName,
+      name: ScanPage.routeName,
+      builder: (context, state) => 
+        const ScanPage(),
+      
+      ),
+    ]
+    ),
 
   ]
 );

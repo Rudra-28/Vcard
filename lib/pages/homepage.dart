@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:vcard/pages/scanpage.dart';
 
 class HomePage extends StatefulWidget {
   static const String routeName = '/';
@@ -12,34 +14,37 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
-    int selectedIndex=0;
+    int selectedIndex = 0;
     return Scaffold(
       appBar: AppBar(title: Text("Contact List")),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          context.goNamed(ScanPage.routeName);
+        },
         shape: const CircleBorder(),
         child: const Icon(Icons.add),
       ),
       bottomNavigationBar: BottomAppBar(
-      
         padding: EdgeInsets.zero,
         shape: const CircularNotchedRectangle(),
         notchMargin: 10,
         clipBehavior: Clip.antiAlias,
         child: BottomNavigationBar(
-          onTap:(index){
+          onTap: (index) {
             setState(() {
-              selectedIndex=index;
+              selectedIndex = index;
             });
-
           },
           currentIndex: selectedIndex,
-          
-        backgroundColor: Colors.blueAccent,
+
+          backgroundColor: Colors.blueAccent,
           items: const [
-            BottomNavigationBarItem(icon: Icon(Icons.person),label: "All"),
-            BottomNavigationBarItem(icon: Icon(Icons.favorite), label: "Favorite"),
+            BottomNavigationBarItem(icon: Icon(Icons.person), label: "All"),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.favorite),
+              label: "Favorite",
+            ),
           ],
         ),
       ),
