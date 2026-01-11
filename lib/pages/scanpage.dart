@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ScanPage extends StatelessWidget {
   const ScanPage({super.key});
@@ -13,12 +14,16 @@ class ScanPage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               TextButton.icon(
-                onPressed: () {},
+                onPressed: () {
+                  getImage(ImageSource.camera);
+                },
                 icon: Icon(Icons.camera),
                 label: const Text("Camera"),
               ),
               TextButton.icon(
-                onPressed: () {},
+                onPressed: () {
+                  getImage(ImageSource.gallery);
+                },
                 icon: Icon(Icons.photo_album),
                 label: const Text("Gallery"),
               ),
@@ -27,5 +32,12 @@ class ScanPage extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  void getImage(ImageSource camera) async{
+    final xfile = await ImagePicker().pickImage(source: camera);
+    if (xfile != null) {
+      print(xfile.path);
+    }
   }
 }
