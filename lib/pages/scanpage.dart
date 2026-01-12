@@ -1,4 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ScanPage extends StatelessWidget {
@@ -34,10 +38,21 @@ class ScanPage extends StatelessWidget {
     );
   }
 
-  void getImage(ImageSource camera) async{
-    final xfile = await ImagePicker().pickImage(source: camera);
-    if (xfile != null) {
-      print(xfile.path);
+ void getImage(ImageSource Camera) async{
+  final xFile= await ImagePicker().pickImage(source: Camera);
+  if(xFile!= null){
+    EasyLoading.show(status: "Please Wait");
+    final Fontrecognizer= TextRecognizer(script: TextRecognitionScript.latin);
+    final RecognizedText= await Fontrecognizer.processImage(InputImage.fromFile(File(xFile.path)));
+    EasyLoading.dismiss();
+    final templist = <String> [];
+    for(var block in RecognizedText.blocks){
+      for(var line in block.lines){
+        templist.add(line.text);
+      }
     }
+    print(templist);
   }
+
+ }
 }
