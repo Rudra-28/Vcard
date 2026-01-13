@@ -1,13 +1,22 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 import 'package:image_picker/image_picker.dart';
 
-class ScanPage extends StatelessWidget {
+class ScanPage extends StatefulWidget {
   const ScanPage({super.key});
   static const String routeName = 'scanpage';
+
+  @override
+  State<ScanPage> createState() => _ScanPageState();
+}
+
+class _ScanPageState extends State<ScanPage> {
+  bool isScanOver = false;
+  List<String> lines = [];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,26 +42,62 @@ class ScanPage extends StatelessWidget {
               ),
             ],
           ),
+          Wrap(children: lines.map((e) => LineItem(line: e)).toList()),
         ],
       ),
     );
   }
 
- void getImage(ImageSource Camera) async{
-  final xFile= await ImagePicker().pickImage(source: Camera);
-  if(xFile!= null){
-    EasyLoading.show(status: "Please Wait");
-    final Fontrecognizer= TextRecognizer(script: TextRecognitionScript.latin);
-    final RecognizedText= await Fontrecognizer.processImage(InputImage.fromFile(File(xFile.path)));
-    EasyLoading.dismiss();
-    final templist = <String> [];
-    for(var block in RecognizedText.blocks){
-      for(var line in block.lines){
-        templist.add(line.text);
+  void getImage(ImageSource Camera) async {
+    final xFile = await ImagePicker().pickImage(source: Camera);
+    if (xFile != null) {
+      EasyLoading.show(status: "Please Wait");
+      final Fontrecognizer = TextRecognizer(
+        script: TextRecognitionScript.latin,
+      );
+      final RecognizedText = await Fontrecognizer.processImage(
+        InputImage.fromFile(File(xFile.path)),
+      );
+      EasyLoading.dismiss();
+      final templist = <String>[];
+      for (var block in RecognizedText.blocks) {
+        for (var line in block.lines) {
+          templist.add(line.text);
+        }
       }
+      setState(() {
+        lines = templist;
+        isScanOver = true;
+      });
     }
-    print(templist);
   }
+}
 
- }
+class LineItem extends StatefulWidget {
+  const LineItem({super.key, required this.line});
+  final String line;
+  @override
+  State<LineItem> createState() => _LineItemState();
+}
+
+class _LineItemState extends State<LineItem> {
+  @override
+  Widget build(BuildContext context) {
+    return LongPressDraggable(
+      data: widget.line,
+      dragAnchorStrategy: childDragAnchorStrategy,
+      feedback: Container(
+        key: GlobalKey(),
+        padding: EdgeInsets.all(8),
+        decoration: BoxDecoration(color: Colors.black45),
+        child: Text(
+          widget.line,
+          style: Theme.of(
+            context,
+          ).textTheme.titleMedium!.copyWith(color: Colors.white),
+        ),
+      ),
+      child: Chip(label: Text(widget.line)),
+    );
+  }
 }
