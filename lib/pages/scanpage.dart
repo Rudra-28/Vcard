@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:math';
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
@@ -98,6 +99,33 @@ class _LineItemState extends State<LineItem> {
         ),
       ),
       child: Chip(label: Text(widget.line)),
+    );
+  }
+}
+
+class DropTargetItem extends StatefulWidget {
+  const DropTargetItem({super.key, required this.property, required this.onDrop});
+  final String property;
+  final Function(String, String) onDrop;
+  @override
+  State<DropTargetItem> createState() => _DropTargetItemState();
+}
+
+class _DropTargetItemState extends State<DropTargetItem> {
+  @override
+  String dragItem='';
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(child: Text(widget.property)
+        ),
+        Expanded(child: DragTarget<String>(builder: (context, candidateData, rejectData)=>Container(
+          padding: EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            border: candidateData.isNotEmpty? Border.all(color: Colors.red, width: 2):null,
+          ),
+        )))
+      ],
     );
   }
 }
