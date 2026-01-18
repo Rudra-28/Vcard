@@ -120,9 +120,7 @@ class _DropTargetItemState extends State<DropTargetItem> {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Expanded(
-          flex: 1,
-          child: Text(widget.property)),
+        Expanded(flex: 1, child: Text(widget.property)),
         Expanded(
           flex: 2,
           child: DragTarget<String>(
@@ -135,20 +133,31 @@ class _DropTargetItemState extends State<DropTargetItem> {
               ),
               child: Row(
                 children: [
-                  Expanded(child: Text(
-                    dragItem.isNotEmpty?'Drop Here':dragItem
-                  )),
-                  InkWell(
-                    onTap: (){
-                      setState(() {
-                        dragItem='';
-                      });
-                    },
-                    child: const Icon(Icons.clear),
-                  )
+                  Expanded(
+                    child: Text(dragItem.isNotEmpty ? 'Drop Here' : dragItem),
+                  ),
+                  if (dragItem.isNotEmpty)
+                    InkWell(
+                      onTap: () {
+                        setState(() {
+                          dragItem = '';
+                        });
+                      },
+                      child: const Icon(Icons.clear),
+                    ),
                 ],
               ),
             ),
+            onAcceptWithDetails: (value){
+              setState(() {
+                if(dragItem.isEmpty){
+                  dragItem=value as String;
+                } else{
+                  dragItem+='$value';
+                }
+              });
+              widget.onDrop(widget.property, dragItem);
+            },
           ),
         ),
       ],
