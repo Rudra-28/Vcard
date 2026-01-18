@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'dart:math';
-
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -53,10 +52,10 @@ class _ScanPageState extends State<ScanPage> {
     final xFile = await ImagePicker().pickImage(source: Camera);
     if (xFile != null) {
       EasyLoading.show(status: "Please Wait");
-      final Fontrecognizer = TextRecognizer(
+      final Textrecognizer = TextRecognizer(
         script: TextRecognitionScript.latin,
       );
-      final RecognizedText = await Fontrecognizer.processImage(
+      final RecognizedText = await Textrecognizer.processImage(
         InputImage.fromFile(File(xFile.path)),
       );
       EasyLoading.dismiss();
@@ -104,7 +103,11 @@ class _LineItemState extends State<LineItem> {
 }
 
 class DropTargetItem extends StatefulWidget {
-  const DropTargetItem({super.key, required this.property, required this.onDrop});
+  const DropTargetItem({
+    super.key,
+    required this.property,
+    required this.onDrop,
+  });
   final String property;
   final Function(String, String) onDrop;
   @override
@@ -113,18 +116,41 @@ class DropTargetItem extends StatefulWidget {
 
 class _DropTargetItemState extends State<DropTargetItem> {
   @override
-  String dragItem='';
+  String dragItem = '';
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Expanded(child: Text(widget.property)
-        ),
-        Expanded(child: DragTarget<String>(builder: (context, candidateData, rejectData)=>Container(
-          padding: EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            border: candidateData.isNotEmpty? Border.all(color: Colors.red, width: 2):null,
+        Expanded(
+          flex: 1,
+          child: Text(widget.property)),
+        Expanded(
+          flex: 2,
+          child: DragTarget<String>(
+            builder: (context, candidateData, rejectData) => Container(
+              padding: EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                border: candidateData.isNotEmpty
+                    ? Border.all(color: Colors.red, width: 2)
+                    : null,
+              ),
+              child: Row(
+                children: [
+                  Expanded(child: Text(
+                    dragItem.isNotEmpty?'Drop Here':dragItem
+                  )),
+                  InkWell(
+                    onTap: (){
+                      setState(() {
+                        dragItem='';
+                      });
+                    },
+                    child: const Icon(Icons.clear),
+                  )
+                ],
+              ),
+            ),
           ),
-        )))
+        ),
       ],
     );
   }
