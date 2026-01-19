@@ -7,6 +7,7 @@ import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart
 import 'package:image_picker/image_picker.dart';
 
 class ScanPage extends StatefulWidget {
+  
   const ScanPage({super.key});
   static const String routeName = 'scanpage';
 
@@ -42,6 +43,22 @@ class _ScanPageState extends State<ScanPage> {
               ),
             ],
           ),
+          if(isScanOver) Card(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: [
+                  DragTargetItem( property: ContactProperties.name, onDrop: getPropertyValue,),
+                  DragTargetItem( property: ContactProperties.address, onDrop: getPropertyValue,),
+                  DragTargetItem( property: ContactProperties.company, onDrop: getPropertyValue,),
+                  DragTargetItem( property: ContactProperties.designation, onDrop: getPropertyValue,),
+                  DragTargetItem( property: ContactProperties.email, onDrop: getPropertyValue,),
+                  DragTargetItem( property: ContactProperties.mobile, onDrop: getPropertyValue,),
+                  DragTargetItem( property: ContactProperties.website, onDrop: getPropertyValue,),
+                ],
+              ),
+            ),
+          ),
           Wrap(children: lines.map((e) => LineItem(line: e)).toList()),
         ],
       ),
@@ -71,7 +88,25 @@ class _ScanPageState extends State<ScanPage> {
       });
     }
   }
+  getPropertyValue(String property, String value){
+  
 }
+}
+
+
+
+class ContactProperties {
+  ContactProperties._(); // private constructor (prevents instantiation)
+  static const String name = "Name";
+  static const String mobile = "Mobile";
+  static const String email = "Email";
+  static const String address = "Address";
+  static const String company = "Company";
+  static const String designation = "Designation";
+  static const String website = "Website";
+}
+
+
 
 class LineItem extends StatefulWidget {
   const LineItem({super.key, required this.line});
@@ -102,21 +137,24 @@ class _LineItemState extends State<LineItem> {
   }
 }
 
-class DropTargetItem extends StatefulWidget {
-  const DropTargetItem({
+class DragTargetItem extends StatefulWidget {
+  const DragTargetItem({
     super.key,
     required this.property,
     required this.onDrop,
   });
+
   final String property;
   final Function(String, String) onDrop;
+
   @override
-  State<DropTargetItem> createState() => _DropTargetItemState();
+  State<DragTargetItem> createState() => _DragTargetItemState();
 }
 
-class _DropTargetItemState extends State<DropTargetItem> {
-  @override
+class _DragTargetItemState extends State<DragTargetItem> {
   String dragItem = '';
+
+  @override
   Widget build(BuildContext context) {
     return Row(
       children: [
@@ -125,35 +163,35 @@ class _DropTargetItemState extends State<DropTargetItem> {
           flex: 2,
           child: DragTarget<String>(
             builder: (context, candidateData, rejectData) => Container(
-              padding: EdgeInsets.all(8),
+              padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
                 border: candidateData.isNotEmpty
                     ? Border.all(color: Colors.red, width: 2)
-                    : null,
+                    : Border.all(color: Colors.grey),
               ),
               child: Row(
                 children: [
                   Expanded(
-                    child: Text(dragItem.isNotEmpty ? 'Drop Here' : dragItem),
+                    child: Text(
+                      dragItem.isEmpty ? 'Drop Here' : dragItem,
+                    ),
                   ),
                   if (dragItem.isNotEmpty)
                     InkWell(
                       onTap: () {
-                        setState(() {
-                          dragItem = '';
-                        });
+                        setState(() => dragItem = '');
                       },
                       child: const Icon(Icons.clear),
                     ),
                 ],
               ),
             ),
-            onAcceptWithDetails: (value){
+            onAcceptWithDetails: (details) {
               setState(() {
-                if(dragItem.isEmpty){
-                  dragItem=value as String;
-                } else{
-                  dragItem+='$value';
+                if (!dragItem.contains(details.data)) {
+                  dragItem = dragItem.isEmpty
+                      ? details.data
+                      : '$dragItem ${details.data}';
                 }
               });
               widget.onDrop(widget.property, dragItem);
