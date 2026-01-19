@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:vcard/utils/contactproperties.dart';
 
 class ScanPage extends StatefulWidget {
-  
   const ScanPage({super.key});
   static const String routeName = 'scanpage';
 
@@ -18,6 +18,7 @@ class ScanPage extends StatefulWidget {
 class _ScanPageState extends State<ScanPage> {
   bool isScanOver = false;
   List<String> lines = [];
+  String name='', mobile='', email='',address='', company='',designation='', website='';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,22 +44,45 @@ class _ScanPageState extends State<ScanPage> {
               ),
             ],
           ),
-          if(isScanOver) Card(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                children: [
-                  DragTargetItem( property: ContactProperties.name, onDrop: getPropertyValue,),
-                  DragTargetItem( property: ContactProperties.address, onDrop: getPropertyValue,),
-                  DragTargetItem( property: ContactProperties.company, onDrop: getPropertyValue,),
-                  DragTargetItem( property: ContactProperties.designation, onDrop: getPropertyValue,),
-                  DragTargetItem( property: ContactProperties.email, onDrop: getPropertyValue,),
-                  DragTargetItem( property: ContactProperties.mobile, onDrop: getPropertyValue,),
-                  DragTargetItem( property: ContactProperties.website, onDrop: getPropertyValue,),
-                ],
+          if (isScanOver)
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  children: [
+                    DragTargetItem(
+                      property: ContactProperties.name,
+                      onDrop: getPropertyValue,
+                    ),
+                    DragTargetItem(
+                      property: ContactProperties.address,
+                      onDrop: getPropertyValue,
+                    ),
+                    DragTargetItem(
+                      property: ContactProperties.company,
+                      onDrop: getPropertyValue,
+                    ),
+                    DragTargetItem(
+                      property: ContactProperties.designation,
+                      onDrop: getPropertyValue,
+                    ),
+                    DragTargetItem(
+                      property: ContactProperties.email,
+                      onDrop: getPropertyValue,
+                    ),
+                    DragTargetItem(
+                      property: ContactProperties.mobile,
+                      onDrop: getPropertyValue,
+                    ),
+                    DragTargetItem(
+                      property: ContactProperties.website,
+                      onDrop: getPropertyValue,
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
+            if(isScanOver) const Padding(padding: const EdgeInsets.all(8), child: Text(hint),),
           Wrap(children: lines.map((e) => LineItem(line: e)).toList()),
         ],
       ),
@@ -88,25 +112,9 @@ class _ScanPageState extends State<ScanPage> {
       });
     }
   }
-  getPropertyValue(String property, String value){
-  
+
+  getPropertyValue(String property, String value) {}
 }
-}
-
-
-
-class ContactProperties {
-  ContactProperties._(); // private constructor (prevents instantiation)
-  static const String name = "Name";
-  static const String mobile = "Mobile";
-  static const String email = "Email";
-  static const String address = "Address";
-  static const String company = "Company";
-  static const String designation = "Designation";
-  static const String website = "Website";
-}
-
-
 
 class LineItem extends StatefulWidget {
   const LineItem({super.key, required this.line});
@@ -172,9 +180,7 @@ class _DragTargetItemState extends State<DragTargetItem> {
               child: Row(
                 children: [
                   Expanded(
-                    child: Text(
-                      dragItem.isEmpty ? 'Drop Here' : dragItem,
-                    ),
+                    child: Text(dragItem.isEmpty ? 'Drop Here' : dragItem),
                   ),
                   if (dragItem.isNotEmpty)
                     InkWell(
