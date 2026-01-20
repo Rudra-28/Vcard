@@ -22,7 +22,11 @@ class _ScanPageState extends State<ScanPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Scan your Visiting Card")),
+      appBar: AppBar(title: Text("Scan your Visiting Card"), actions: [
+        IconButton(onPressed: (){
+
+        }, icon: Icon(Icons.arrow_forward),)
+      ],),
       body: ListView(
         children: [
           Row(
@@ -113,7 +117,31 @@ class _ScanPageState extends State<ScanPage> {
     }
   }
 
-  getPropertyValue(String property, String value) {}
+  getPropertyValue(String property, String value) {
+    switch(property){
+      case ContactProperties.name:
+      name=value;
+      break;
+      case ContactProperties.address:
+      address=value;
+      break;
+      case ContactProperties.designation:
+      designation=value;
+      break;
+      case ContactProperties.email:
+      email=value;
+      break;
+      case ContactProperties.mobile:
+      mobile=value;
+      break;
+      case ContactProperties.website:
+      website=value;
+      break;
+      case ContactProperties.company:
+      company=value;
+      break;
+    }
+  }
 }
 
 class LineItem extends StatefulWidget {
